@@ -1,0 +1,36 @@
+$theme-colors: (
+  "primary": $primary,
+  "primary-light": $primary-light,
+  "secondary": $secondary,
+  "secondary-light": $secondary-light,
+  "success": $success,
+  "success-light": $success-light,
+  "danger": $danger,
+  "danger-light": $danger-light,
+  "warning": $warning,
+  "warning-light": $warning-light,
+  "gray-100": $gray-100,
+  "gray-200": $gray-200,
+  "gray-300": $gray-300,
+  "gray-400": $gray-400,
+  "gray-500": $gray-500,
+  "gray-600": $gray-600,
+  "gray-700": $gray-700,
+  "gray-800": $gray-800,
+  "gray-900": $gray-900,
+  "gray-1000": $gray-1000,
+);
+
+:root {
+  --primary: $primary;
+  --primary-light: $primary-light;
+  --secondary: $secondary;
+  --secondary-light: $secondary-light;
+  --success: $success;
+  --success-light: $success-light;
+  --danger: $danger;
+  --danger-light: $danger-light;
+  --warning: $warning;
+  --warning-light: $warning-light;
+  
+}
