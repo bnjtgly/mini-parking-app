@@ -3,7 +3,7 @@
     <b-card-group>
       <b-card class='border-0 -commence'>
         <b-card-text class="text-right">
-          <p class='amount'>3</p>
+          <p class='amount'>{{summary.available_slots}}</p>
           <p>
             <label>Available Slots</label>
           </p>
@@ -11,7 +11,7 @@
       </b-card>
       <b-card class='border-0 -created'>
         <b-card-text class="text-right">
-          <p class='amount'>1</p>
+          <p class='amount'>{{summary.occupied_slots}}</p>
           <p>
             <label>Occupied Slots</label>
           </p>
@@ -19,7 +19,7 @@
       </b-card>
       <b-card class='border-0 -finalised'>
         <b-card-text class="text-right">
-          <p class='amount'>4</p>
+          <p class='amount'>{{summary.total_parking_slots}}</p>
           <p>
            <label>Total Slots</label>
           </p>

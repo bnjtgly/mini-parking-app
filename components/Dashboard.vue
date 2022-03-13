@@ -10,15 +10,14 @@
     <div class="l-content mx-auto">
       <div class="h-100 d-flex align-items-start justify-content-between">
         <div>
-          <TotalInvoice />
+          <TotalInvoice :summary='invoices' />
         </div>
-
         <div>
           <div class="o-container -middle">
-            <ComplexSummary />
+            <ComplexSummary :summary='parkingComplex' />
           </div>
           <div class="o-container with-border -middle">
-            <SlotsSummary />
+            <SlotsSummary :summary='parkingSlots' />
           </div>
         </div>
 
@@ -40,7 +39,27 @@ import LatestParkings from '~/components/dashboard/LatestParkings'
 
 export default {
   name: "Dashboard",
-  components: { TotalInvoice, ComplexSummary, SlotsSummary, LatestParkings }
+  components: { TotalInvoice, ComplexSummary, SlotsSummary, LatestParkings },
+  data () {
+    return {
+      parkingComplex: [],
+      parkingSlots: [],
+      invoices: []
+    }
+  },
+  async fetch() {
+    try {
+      const { data } = await this.$axios.$get('admin_api/v1/dashboard')
+
+      this.parkingComplex = data.parking_complex
+      this.parkingSlots = data.parking_slots
+      this.invoices = data.invoices
+    } catch (err) {
+      if (err.response) {
+        this.$toast.error('Failed to fetch parking complex.')
+      }
+    }
+  }
 }
 </script>
 

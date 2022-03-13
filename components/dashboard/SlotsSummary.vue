@@ -5,7 +5,7 @@
         <div class="b-title">Parking Slots Summary</div>
       </div>
 
-      <SlotCard />
+      <SlotCard :summary='summary' />
 <!--    </div>-->
   </div>
 </template>
@@ -15,9 +15,10 @@ import SlotCard from '~/components/dashboard/Custom/SlotCard'
 
 export default {
   components: {SlotCard},
-  data() {
-    return {
-      summary: {},
+  props: {
+    summary: {
+      type: Object,
+      default: () => ({})
     }
   }
 }

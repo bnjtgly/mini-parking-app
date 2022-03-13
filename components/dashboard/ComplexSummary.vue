@@ -1,18 +1,30 @@
 <template>
   <div class="complex-summary text-center">
     <div class="b-title">Total Parking Spaces</div>
-    <h1> 5</h1>
+    <h1>{{summary.total_parking_spaces}}</h1>
     <div class="l-threshold">
       <p>Total Entry points</p>
-      <h3>17</h3>
+      <h3>{{summary.total_entry_points}}</h3>
     </div>
   </div>
 </template>
+<script>
+export default {
+  props: {
+    summary: {
+      type: Object,
+      default: () => ({})
+    }
+  }
+}
+</script>
 <style lang='scss' scoped>
 .complex-summary {
   margin-bottom: 23px;
   color: var(--white);
-  background: linear-gradient(90deg, rgba(32,125,90,1) 0%, rgba(32,125,90,1) 50%);
+  //background: linear-gradient(90deg, rgba(32,125,90,1) 0%, rgba(32,125,90,1) 50%);
+  background: rgb(158,167,171);
+  background: linear-gradient(90deg, rgba(158,167,171,1) 0%, rgba(177,188,192,1) 50%);
   border: none;
   border-radius: 15px;
   padding: 20px 25px;

@@ -1,9 +1,10 @@
 <template>
   <div class="card mb-3 px-4 py-3">
-    <div class="d-flex align-items-center mb-3" style="height: 30px;">
-      <b-button variant="success" size="sm" @click="showItemModal()">
+    <div class="d-flex ml-auto mb-3" style="height: 30px;">
+      <b-button variant="success" size="sm" @click="addNewEntrypoint()">
         Add Entry Point
       </b-button>
+      <AddEntrypointToast ref="AddEntrypointToast" @newData="newTeam($event)" />
     </div>
     <p class="text-lg">Entry points</p>
     <p class="text-gray-600 mb-3 text-sm">Atleast three (3) entry points.</p>
@@ -14,12 +15,19 @@
 </template>
 
 <script>
+import AddEntrypointToast from "../../components/entrypoint/AddEntrypointToast";
 
 export default {
+  components: { AddEntrypointToast },
   props: {
     summary: {
       type: Array,
       default: []
+    }
+  },
+  methods: {
+    addNewEntrypoint () {
+      this.$refs.AddEntrypointToast.show()
     }
   }
 }

@@ -1,20 +1,31 @@
 <template>
   <div class="float-account text-center">
     <div class="b-title">Total Invoices</div>
-    <h1><span class='currency'>₱</span> 512,025.00</h1>
+    <h1><span class='currency'>₱</span> {{summary.total_eanings}}</h1>
     <div class="l-threshold">
       <p>Today's invoices</p>
-      <h3>₱ 200,000</h3>
+      <h3>₱ {{summary.today_earnings}}</h3>
     </div>
   </div>
 </template>
+<script>
+export default {
+  props: {
+    summary: {
+      type: Object,
+      default: () => ({})
+    }
+  }
+}
+</script>
 <style lang='scss' scoped>
 .float-account {
   width: 100vw;
   max-width: 398px;
   margin-bottom: 23px;
   color: var(--white);
-  background: linear-gradient(90deg, rgba(156,0,56,1) 0%, rgba(189,37,60,1) 50%);
+  background: rgb(33,117,102);
+  background: linear-gradient(90deg, rgba(33,117,102,1) 0%, rgba(78,156,130,1) 50%);
   border: none;
   border-radius: 15px;
   padding: 20px 25px;

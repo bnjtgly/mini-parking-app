@@ -47,7 +47,6 @@
 
           <!-- <BulkAction :bulk-actions="bulkActions" class="mt-3" /> -->
           <ItemModal ref="itemModal" :selected="selectedItem" has-metadata @newDomRefs="addDomRef($event)"/>
-          <ItemModal ref="itemModalNoMeta" :selected="selectedItem" @newDomRefs="addDomRef($event)"/>
         </div>
       </div>
     </div>
@@ -58,9 +57,11 @@
 
 import CustomTable from '~/components/CustomTable'
 import EntrypointCard from '~/components/spaces/EntrypointCard'
+import ItemModal from '~/components/spaces/ItemModal'
+
 
 export default {
-  components: { CustomTable, EntrypointCard },
+  components: { CustomTable, EntrypointCard, ItemModal },
   data: () => ({
     fields: [
 
@@ -104,111 +105,13 @@ export default {
       }
     }
   },
-  watch: {
-    '$route.params': '$fetch',
-  },
   methods: {
-    async addDomRef (domRef) {
-      const id = this.$route.params.id
-      const domainReferenceId = domRef.domain_reference_id
-
-      if(!domainReferenceId){
-        // ADD NEW
-        domRef.domain_id = id
-        try{
-          const response = await this.$axios.$post('admin_api/domain_references', domRef)
-          if (response){
-            this.$store.dispatch('alert/storeAlert', { variant: 'success', content: 'Domain Reference added.' })
-          }
-        }catch (err) {
-          if (err.response) {
-            for (const [value] of Object.entries(err.response.data.error)) {
-              for (const msg of err.response.data.error[value]) {
-                this.$store.dispatch('alert/storeAlert', { variant: 'danger', content: msg })
-              }
-            }
-          }
-        }
-      }else{
-        // EDIT EXISTING
-        delete domRef.domain_reference_id
-        try{
-          const response = await this.$axios.$patch(`admin_api/domain_references/${domainReferenceId}`, domRef)
-          if (response){
-            this.$store.dispatch('alert/storeAlert', { variant: 'success', content: 'Domain Reference updated.' })
-          }
-        }catch (err) {
-          if (err.response) {
-            for (const [value] of Object.entries(err.response.data.error)) {
-              for (const msg of err.response.data.error[value]) {
-                this.$store.dispatch('alert/storeAlert', { variant: 'danger', content: msg })
-              }
-            }
-          }
-        }
-
-      }
-      await this.fetchDomRefs(id)
-    },
-    async fetchDomRefs (id) {
-      this.domains = await this.$axios.$get(`admin_api/domains/${id}`, {params: {is_deleted: false}})
-    },
     showItemModal () {
       this.$refs.itemModal.show()
-      this.selectedItem = {}
-    },
-    changeStatus (id, status) {
-      // code here
-    },
-    editItem (item) {
-      this.selectedItem = item
-      if(item.metadata === "{}"){
-        this.$refs.itemModalNoMeta.show()
-      }else{
-        this.$refs.itemModal.show()
-      }
-    },
-    async deleteItem (item) {
-      if(confirm(`Delete ${item.display}?`,)){
-        try{
-          await this.$axios.$delete(`admin_api/domain_references/${item.domain_reference_id}`)
-          await this.fetchDomRefs (this.$route.params.id)
-          this.$store.dispatch('alert/storeAlert', { variant: 'danger', content: 'Item Deleted.' })
-        }catch (err) {
-          if (err.response) {
-            for (const [value] of Object.entries(err.response.data.error)) {
-              for (const msg of err.response.data.error[value]) {
-                this.$store.dispatch('alert/storeAlert', { variant: 'danger', content: msg })
-              }
-            }
-          }
-        }
-      }
-    },
-    isSelected (id) {
-      return this.selectedData.includes(id)
-    },
-    selectAll ($event) {
-      if ($event) {
-        for (const value of this.domains.domain_references) {
-          this.selectedData.push(value.id)
-        }
-      } else {
-        this.selectedData = []
-      }
-    },
-    sortItem (value) {
-      if(value){
-        this.domains.domain_references.sort((a,b)=> (a.display > b.display ? 1 : -1))
-      }
-    },
-    sortDir (value) {
-      if(value === 'desc'){
-        this.domains.domain_references.sort((a,b)=> (a.display > b.display ? 1 : -1))
-      }else{
-        this.domains.domain_references.sort((a,b)=> (a.display > b.display ? -1 : 1))
-      }
-    },
+    }
+  },
+  watch: {
+    '$route.params': '$fetch',
   }
 }
 </script>
