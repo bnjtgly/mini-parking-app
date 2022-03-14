@@ -18,8 +18,8 @@
       </ul>
 
 
-      <b-input-group class='ml-auto mr-2 w-20'>
-        <b-form-input class='bg-light text-white border-0 outline-none pl-2' placeholder='Search Mini Park'></b-form-input>
+      <b-input-group class='ml-auto mr-2 w-20 '>
+        <b-form-input class='bg-light border-0 outline-none pl-2' placeholder='Search Mini Park'></b-form-input>
       </b-input-group>
 
       <ul class='navbar-nav navbar-icons'>

@@ -2,7 +2,7 @@
   <div class="d-flex">
     <div class="sidebar">
       <div class="d-flex align-items-center py-2 px-3">
-        <p class="text-lg">Parking Complex Management</p>
+        <p class="text-lg">Parking Management</p>
       </div>
       <div class="menu px-3">
         <nuxt-link v-for='space in spaces' :key='space.parking_complex_id' :to="`/spaces/${space.parking_complex_id}`" class="menu-item d-block">

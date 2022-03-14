@@ -15,48 +15,6 @@
       <label class="text-gray-600 text-sm font-weight-bold">Name</label>
       <b-input v-model="entity.name" type="text" class="bg-gray-200 border-0 mb-2 outline-none" required></b-input>
 
-      <!-- Metadata -->
-      <div v-if="hasMetadata">
-        <label class="text-gray-600 text-sm font-weight-bold">Meta Data <span class="text-gray-500">(when complete, press tab to add new meta data)</span></label>
-        <div
-          v-for="(value, key) in entity.metadata" :key="key"
-          class="metadata d-flex align-items-center border rounded bg-gray-100 w-100 my-1 position-relative"
-        >
-          <div class="w-50">
-            <b-input class="bg-gray-100 outline-none border-0 cursor-default" readonly type="text" :value="key"></b-input>
-          </div>
-          <div class="w-50 border-left">
-            <b-input class="bg-gray-100 outline-none border-0 cursor-default" readonly type="text" :value="value"></b-input>
-          </div>
-          <div class="delete-metadata-btn clickable" @click="deleteMetadata(key)">
-            <FontAwesomeIcon :icon="['fal', 'times']" />
-          </div>
-        </div>
-
-        <!-- Add Metadata -->
-        <div
-          v-if="addingMetadata"
-          class="d-flex align-items-center border rounded bg-gray-100 w-100 my-1"
-          @click.self="cancelAddingMetaData()"
-        >
-          <div class="w-50">
-            <b-form-input id="metadata_key" v-model="metadata_placeholder.key" placeholder="Key" class="py-0 bg-gray-100 w-100 outline-none border-0" type="text"></b-form-input>
-          </div>
-          <div class="w-50 border-left position-relative d-flex align-items-center">
-            <b-form-input v-model="metadata_placeholder.value" placeholder="Value" class="py-0 bg-gray-100 w-100 outline-none border-0" type="text" @blur="addMetadata()"></b-form-input>
-            <div class="cancel-metadata-btn clickable" @click="cancelAddingMetaData()">
-              <FontAwesomeIcon :icon="['fal', 'times']" />
-            </div>
-          </div>
-        </div>
-        <div class="d-flex">
-          <b-button v-if="!addingMetadata" variant="light" size="sm" class="text-gray-700 font-weight-bold outline-none" @click="addingMetadata = true">
-            <FontAwesomeIcon :icon="['fal', 'plus']" class="mr-1"/>
-            Add Metadata
-          </b-button>
-        </div>
-      </div>
-
       <div class="d-flex align-items-center justify-content-between my-3">
         <b-button variant="text" class="close-icon outline-none" @click="hide()">Cancel</b-button>
         <b-button variant="success outline-none" type="submit">{{ isEdit ? 'Edit Item' : 'Add New Item' }}</b-button>

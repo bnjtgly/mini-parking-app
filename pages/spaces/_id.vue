@@ -26,19 +26,6 @@
               </div>
             </div>
 
-            <div v-if='!row.item.entry_point_distance.length' slot="entry_point_distance" slot-scope="row">
-              <div v-for="(value, key) in row.item.entry_point_distance" :key="key" class="d-flex align-items-center border rounded bg-gray-100 w-100 my-1">
-                <p class="w-50 text-gray-600 px-2">{{ key }}</p>
-                <div v-if="typeof value === 'object'" class="border-left w-50 py-1">
-                  <b-input v-for="(item, index) in value" :key="index" class="py-0 bg-gray-100 h-100 outline-none border-0" readonly type="text" :value="item"></b-input>
-                </div>
-                <div v-else class="border-left w-50 py-1">
-                  <b-input class="py-0 bg-gray-100 h-100 outline-none border-0" readonly type="text" :value="value"></b-input>
-                </div>
-              </div>
-            </div>
-            <div v-else slot="entry_point_distance"></div>
-
             <div slot="status" slot-scope="row" class="d-flex justify-content-center">
               <ToggleButton v-model="row.item.status" @clicked="changeStatus(row.item.id, $event)" />
             </div>
@@ -74,17 +61,6 @@ export default {
         key: 'slot_name',
         label: 'Name',
         thClass: 'text-gray-600 text-sm font-weight-normal text-uppercase'
-      },
-      {
-        key: 'price',
-        label: 'Price',
-        thClass: 'text-gray-600 text-sm font-weight-normal text-uppercase'
-      },
-      {
-        key: 'entry_point_distance',
-        label: 'Entry Point Distance ',
-        tdClass: 'text-gray-600 py-2 px-3 ',
-        thClass: 'text-gray-600 py-2 px-3 text-sm font-weight-normal text-uppercase'
       }
     ],
     spaces: [], parkingComplex: []
