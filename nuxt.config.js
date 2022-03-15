@@ -60,7 +60,7 @@ export default {
 
   toast: {
     position: 'top-right',
-    duration: 5 * 1000,
+    duration: 2 * 1000,
     keepOnHover: true
   },
 
