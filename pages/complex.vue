@@ -23,7 +23,7 @@
             <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><path d="M0,172v-172h172v172z" fill="none"></path><g fill="#ffffff"><path d="M86,46.58333c-1.978,0 -3.58333,1.60533 -3.58333,3.58333v32.25h-32.25c-1.978,0 -3.58333,1.60533 -3.58333,3.58333c0,1.978 1.60533,3.58333 3.58333,3.58333h32.25v32.25c0,1.978 1.60533,3.58333 3.58333,3.58333c1.978,0 3.58333,-1.60533 3.58333,-3.58333v-32.25h32.25c1.978,0 3.58333,-1.60533 3.58333,-3.58333c0,-1.978 -1.60533,-3.58333 -3.58333,-3.58333h-32.25v-32.25c0,-1.978 -1.60533,-3.58333 -3.58333,-3.58333z"></path></g></g></svg>
           New Parking Complex
         </b-button>
-        <ParkingComplexToast ref="ParkingComplexToast" @newData="newTeam($event)" />
+        <ParkingComplexToast ref="ParkingComplexToast" @newData="newComplex($event)" />
       </div>
     </div>
 
@@ -62,6 +62,7 @@ import ParkingComplexToast from "~/components/complex/ParkingComplexToast";
 
 export default {
   name: "complex",
+  middleware: 'auth',
   components: { SearchInput, ParkingComplexToast },
   data () {
     return {
@@ -82,6 +83,9 @@ export default {
   methods: {
     addNewEntrypoint () {
       this.$refs.ParkingComplexToast.show()
+    },
+    newComplex (newData) {
+      this.parkingComplex = newData
     }
   }
 }

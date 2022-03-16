@@ -65,6 +65,7 @@
 <script>
 export default {
   name: "slots",
+  middleware: 'auth',
   data () {
     return {
       parkingComplex: [],

@@ -19,7 +19,8 @@
 <script>
 
 export default {
-    async asyncData({ $axios, error }) {
+  middleware: 'auth',
+  async asyncData({ $axios, error }) {
     try {
       const { data } = await $axios.$get('admin_api/v1/parking_complex')
       const spaces = data.parking_complex

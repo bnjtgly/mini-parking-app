@@ -1,9 +1,9 @@
 <template>
   <div class="card mb-3 px-4 py-3">
     <div class="d-flex ml-auto mb-3" style="height: 30px;">
-      <b-button variant="success" size="sm" @click="addNewEntrypoint()">
-        Add Entry Point
-      </b-button>
+<!--      <b-button variant="success" size="sm" @click="addNewEntrypoint()">-->
+<!--        Add Entry Point-->
+<!--      </b-button>-->
       <AddEntrypointToast ref="AddEntrypointToast" @newData="newTeam($event)" />
     </div>
     <p class="text-lg">Entry points</p>

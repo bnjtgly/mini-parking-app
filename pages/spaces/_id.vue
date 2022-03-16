@@ -33,7 +33,7 @@
           </custom-table>
 
           <!-- <BulkAction :bulk-actions="bulkActions" class="mt-3" /> -->
-          <ItemModal ref="itemModal" :selected="selectedItem" has-metadata @newDomRefs="addDomRef($event)"/>
+          <ItemModal ref="itemModal" :selected="selectedItem" :parkingId="parkingComplex.parking_complex_id" has-metadata :slotType="slotType" @newData="newData($event)"/>
         </div>
       </div>
     </div>
@@ -48,10 +48,10 @@ import ItemModal from '~/components/spaces/ItemModal'
 
 
 export default {
+  middleware: 'auth',
   components: { CustomTable, EntrypointCard, ItemModal },
   data: () => ({
     fields: [
-
       {
         key: 'parking_slot_type',
         label: 'Slot Type',
@@ -63,16 +63,24 @@ export default {
         thClass: 'text-gray-600 text-sm font-weight-normal text-uppercase'
       }
     ],
-    spaces: [], parkingComplex: []
+    spaces: [], parkingComplex: [], slotType:[]
   }),
   async fetch() {
     const id = this.$route.params.id
+    const slotOptions = []
     if(id) {
       try {
         const { data } = await this.$axios.$get(`admin_api/v1/parking_complex/${id}`)
         this.parkingComplex = data.parking_complex
         this.spaces = data.parking_complex.parking_slots
 
+        const {data: slot_type} = await this.$axios.$get('admin_api/v1/sub_entities', {params:{entity_number: '1001'}})
+        // this.slotType = slot_type.sub_entities
+
+        for(let slot of slot_type.sub_entities){
+          slotOptions.push({value: slot.sub_entity_id, text: slot.display})
+        }
+        this.slotType = slotOptions
 
       } catch (err) {
         if (err.response) {
@@ -84,6 +92,9 @@ export default {
   methods: {
     showItemModal () {
       this.$refs.itemModal.show()
+    },
+    newData (newData) {
+      this.spaces = newData
     }
   },
   watch: {

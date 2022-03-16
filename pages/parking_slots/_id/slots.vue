@@ -56,6 +56,7 @@
                         type='text'
                       ></b-form-input>
                     </div>
+
                     <b-button
                       variant='info'
                       class='py-2 w-100'
@@ -71,6 +72,29 @@
                     <p><span>Name: </span>{{ availableSlot.slot_name }}</p>
                     <p><span>Distance: </span>{{ `${availableSlot.distance} meters from ${this.findParking.entry_point} entry point.` }}</p>
                     <p><span>Price: </span>{{ availableSlot.price }}</p>
+
+                    <b-form-checkbox
+                      id="checkbox-1"
+                      class="mb-3"
+                      v-model="parkInTimeManual"
+                      name="checkbox-1"
+                      value="true"
+                    >
+                      Manual Parking
+                    </b-form-checkbox>
+
+                    <div v-if="parkInTimeManual" class="park">
+                      <div>
+                        <b-form-datepicker id="park-in-date" v-model="parkInDateValue" class="mb-2"></b-form-datepicker>
+                      </div>
+                      <div>
+                        <b-form-timepicker v-model="parkInTimeValue" locale="en"></b-form-timepicker>
+                      </div>
+                      <div class="park-in-date-time-picker-details mt-3">
+                        <p><span>Park at: </span>{{ `${parkInDateValue} ${parkInTimeValue}` }}</p>
+                      </div>
+                    </div>
+
                     <b-button variant="success" class="align-self-start w-100" @click="park()">
                       Park
                     </b-button>
@@ -92,6 +116,29 @@
                         type='text'
                       ></b-form-input>
                     </div>
+
+                    <b-form-checkbox
+                      id="checkbox-2"
+                      class="mb-3"
+                      v-model="parkOutTimeManual"
+                      name="checkbox-2"
+                      value="true"
+                    >
+                      Manual Checkout
+                    </b-form-checkbox>
+
+                    <div v-if="parkOutTimeManual" class="checkout-parking">
+                      <div>
+                        <b-form-datepicker id="park-out-date" v-model="parkOutDateValue" class="mb-2"></b-form-datepicker>
+                      </div>
+                      <div>
+                        <b-form-timepicker v-model="parkOutTimeValue" locale="en"></b-form-timepicker>
+                      </div>
+                      <div class="park-out-date-time-picker-details mt-3">
+                        <p><span>Checkout at: </span>{{ `${parkOutDateValue} ${parkOutTimeValue}` }}</p>
+                      </div>
+                    </div>
+
                     <b-button
                       variant='warning'
                       class='py-2 w-100 text-white'
@@ -113,9 +160,6 @@
                 </div>
               </div>
 
-<!--              <b-button variant="success" size="lg" class="align-self-start w-100" @click="checkout()">-->
-<!--                Check out-->
-<!--              </b-button>-->
             </div>
           </div>
         </div>
@@ -131,6 +175,7 @@ import SelectEntryPoint from '~/components/inputs/SelectEntryPoint'
 
 export default {
   name: "slots",
+  middleware: 'auth',
   components: { ParkSlotCard, SelectEntryPoint },
   data () {
     return {
@@ -147,7 +192,15 @@ export default {
       findParking: {
         parking_complex: '',
         entry_point: ''
-      }
+      },
+
+      parkInTimeManual: null,
+      parkOutTimeManual: null,
+
+      parkInDateValue: null,
+      parkInTimeValue: null,
+      parkOutDateValue: null,
+      parkOutTimeValue: null
 
     }
   },
@@ -172,6 +225,7 @@ export default {
   },
   methods:{
     async find(){
+      this.invoice = []
       if(!this.isSubmit) {
         try {
           const params = this.findParking
@@ -188,17 +242,24 @@ export default {
       }
     },
     async park(){
+      let valid_from = null
+      if (this.parkInDateValue !== null && this.parkInTimeValue !== null){
+        valid_from = `${this.parkInDateValue} ${this.parkInTimeValue}`
+      }
       const params = {
         parking: {
           customer_id: this.customerFindId,
-          parking_slot_id: this.availableSlot.slot_id
+          parking_slot_id: this.availableSlot.slot_id,
+          valid_from: valid_from
         }
       }
       try{
-        const response = await this.$axios.$post('admin_api/v1/customer_parkings', params)
+        await this.$axios.$post('admin_api/v1/customer_parkings', params)
         this.$toast.success(`Successfully parked at ${this.availableSlot.slot_name}.`)
         this.customerFindId = null
-        this.findParking.entry_point = null
+        this.entryPointsOption = []
+        this.findParking.entry_point = ''
+        this.availableSlot = []
         await this.$fetch()
       }catch (err) {
         if (err.response) {
@@ -211,15 +272,22 @@ export default {
       }
     },
     async checkout(){
+      let valid_thru = null
+      if (this.parkOutDateValue !== null && this.parkOutTimeValue !== null){
+        valid_thru = `${this.parkOutDateValue} ${this.parkOutTimeValue}`
+      }
       const params = {
         parking: {
-          customer_id: this.customerCheckoutId
+          customer_id: this.customerCheckoutId,
+          valid_thru: valid_thru
         }
       }
       try{
         const { data } = await this.$axios.$post('admin_api/v1/customer_parkings/checkout', params)
         this.invoice = data.invoice
         this.customerCheckoutId = null
+        this.entryPointsOption = []
+        this.findParking.entry_point = ''
         this.$toast.success(`Successfully check out from ${this.invoice.slot_name}.`)
         await this.$fetch()
       }catch (err) {

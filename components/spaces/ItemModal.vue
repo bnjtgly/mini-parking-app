@@ -9,7 +9,14 @@
 
       <!-- Slot Type -->
       <label class="text-gray-600 text-sm font-weight-bold">Slot Type</label>
-      <input v-model="entity.slot_type" type="text" class="bg-gray-200 form-control w-100 border-0 mb-2 outline-none" required />
+<!--      <input v-model="entity.slot_type" type="text" class="bg-gray-200 form-control w-100 border-0 mb-2 outline-none" required />-->
+<!--      <SelectCreate-->
+<!--        :options="slotType"-->
+<!--        label="name"-->
+<!--        value="id"-->
+<!--        @selected="entity.parking_slot_type_id = $event"-->
+<!--      />-->
+      <b-form-select class="text-gray-600 text-sm" v-model="entity.selectedType" :options="slotType"></b-form-select>
 
       <!-- Name -->
       <label class="text-gray-600 text-sm font-weight-bold">Name</label>
@@ -27,9 +34,19 @@
 <script>
 import Vue from 'vue'
 import { cloneDeep, assign } from 'lodash'
+import SelectCreate from '~/components/inputs/SelectCreate'
 
 export default {
+  components: { SelectCreate },
   props: {
+    slotType: {
+      type: Array,
+      default: null
+    },
+    parkingId: {
+      type: String,
+      default: null
+    },
     selected: {
       type: Object,
       default: () => ({})
@@ -78,32 +95,30 @@ export default {
       this.$refs.metaTableModal.hide()
       this.addingMetadata = false
     },
-    cancelAddingMetaData () {
-      this.addingMetadata = false
-      this.metadata_placeholder = {
-        key: '',
-        value: ''
-      }
-    },
-    deleteMetadata (key) {
-      Vue.delete(this.entity.metadata, key)
-    },
-    addingItem () {
-      this.addingMetadata = true
-    },
-    addMetadata () {
-      const array = [{ [this.metadata_placeholder.key]: this.metadata_placeholder.value }]
-      this.entity.metadata = assign(this.entity.metadata, ...array)
-      this.metadata_placeholder = {
-        key: '',
-        value: ''
-      }
-      document.getElementById("metadata_key").focus()
-    },
-    addItem () {
+    async addItem () {
       // code here
-      this.$emit('newDomRefs', this.entity)
-      this.hide()
+      try {
+        const params = {
+          parking_slot: {
+            parking_complex_id: this.parkingId,
+            parking_slot_type_id: this.entity.selectedType,
+            name: this.entity.name,
+          }
+        }
+        const response = await this.$axios.$post('admin_api/v1/parking_slots', params)
+
+        if(response){
+          const { data } = await this.$axios.$get(`admin_api/v1/parking_complex/${this.parkingId}`)
+          this.$emit('newData', data.parking_complex.parking_slots)
+          this.hide()
+        }
+      } catch (err) {
+        if (err.response) {
+          for (const [value] of Object.entries(err.response.data.error)) {
+            this.$toast.error(err.response.data.error[value])
+          }
+        }
+      }
     }
   }
 }
