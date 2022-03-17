@@ -12,7 +12,7 @@
           </div>
 
           <div class="mb-5">
-            <EntrypointCard :summary='parkingComplex.entry_points' />
+            <EntrypointCard :summary='entrypointType' :spaceType="spaceType" :parkingId="parkingComplex.parking_complex_id" />
           </div>
 
           <custom-table
@@ -63,11 +63,13 @@ export default {
         thClass: 'text-gray-600 text-sm font-weight-normal text-uppercase'
       }
     ],
-    spaces: [], parkingComplex: [], slotType:[]
+    spaces: [], parkingComplex: [], slotType:[], entrypointType: [], spaceType: []
   }),
   async fetch() {
     const id = this.$route.params.id
     const slotOptions = []
+    const entrypointOptions = []
+    const spaceOptions = []
     if(id) {
       try {
         const { data } = await this.$axios.$get(`admin_api/v1/parking_complex/${id}`)
@@ -81,6 +83,16 @@ export default {
           slotOptions.push({value: slot.sub_entity_id, text: slot.display})
         }
         this.slotType = slotOptions
+
+        for(let entry of this.parkingComplex.entry_points){
+          entrypointOptions.push({value: entry.entry_point_id, text: entry.name})
+        }
+        this.entrypointType = entrypointOptions
+
+        for(let space of this.spaces){
+          spaceOptions.push({value: space.parking_slot_id, text: space.slot_name})
+        }
+        this.spaceType = spaceOptions
 
       } catch (err) {
         if (err.response) {
