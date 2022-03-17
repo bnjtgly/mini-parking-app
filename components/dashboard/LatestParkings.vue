@@ -1,61 +1,26 @@
 <template>
   <div class="latest-parkings">
-<!--    <div v-if='$fetchState.pending'>-->
-<!--      <div class="d-flex justify-content-between -head">-->
-<!--        <div class="b-title">Latest Sign-up Tracker</div>-->
-<!--        <b-skeleton width='50px' height='28px'/>-->
-<!--      </div>-->
-
-<!--      <div class="b-body">-->
-<!--        <b-card v-for='n in 5' :key='n' no-body>-->
-<!--          <div class="d-flex">-->
-<!--            <b-skeleton type="avatar" width='2.5rem' height='2.5rem'></b-skeleton>-->
-<!--            <b-card-body class="p-0 pl-3">-->
-<!--              <b-card-text>-->
-<!--                <div class="d-flex justify-content-between">-->
-<!--                  <div class="details">-->
-<!--                    <div class="name"><b-skeleton width='150px' height='20px'/></div>-->
-<!--                    <div class="email"><b-skeleton width='100px'/></div>-->
-<!--                  </div>-->
-<!--                  <div class="amount-status text-right">-->
-<!--                    <div><b-skeleton width='65px'>{{ n }}</b-skeleton></div>-->
-<!--                    <b-skeleton class='float-right' type="button" width='50px' height='25px'/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </b-card-text>-->
-<!--            </b-card-body>-->
-<!--          </div>-->
-<!--        </b-card>-->
-<!--      </div>-->
-
-<!--      <div class="d-flex justify-content-between -foot">-->
-<!--        <b-skeleton type="button" width='100px'/>-->
-<!--        <b-skeleton type="button" width='100px'/>-->
-<!--      </div>-->
-<!--    </div>-->
-
-<!--    <div v-else>-->
     <div>
       <div class="d-flex justify-content-between -head">
         <div class="b-title">Latest Parkings</div>
       </div>
 
       <div class="b-body">
-        <nuxt-link to="#">
+        <nuxt-link v-for="item in requests" :key="item.id" to="#">
           <b-card no-body>
             <div class="d-flex">
-              <b-avatar text="AP"></b-avatar>
+              <b-avatar :text="item.customer_short"></b-avatar>
               <b-card-body class="p-0 pl-3">
                 <b-card-text>
                   <div class="d-flex justify-content-between">
                     <div class="details">
-                      <div class="name">{{ 'Adam Park' }}</div>
-                      <div class="time-period">{{ '2 hours ago' }}</div>
+                      <div class="name">{{ item.customer }}</div>
+                      <div class="time-period">{{ item.created_at | dayMonthYearTimeFromNow }}</div>
                     </div>
                     <div class="amount-status text-right">
-                      <div>{{ '₱0.00' }}</div>
+                      <div>{{`Php${item.parking_fee}`}}</div>
                       <Badge
-                        :name="'Parked'"
+                        :name="item.status"
                         :text-color="'#01CE81'"
                         :bg-color="'#E5FAEE'"
                         class="text-uppercase"
@@ -68,86 +33,37 @@
           </b-card>
         </nuxt-link>
 
-        <nuxt-link to="#">
-          <b-card no-body>
-            <div class="d-flex">
-              <b-avatar text="BA"></b-avatar>
-              <b-card-body class="p-0 pl-3">
-                <b-card-text>
-                  <div class="d-flex justify-content-between">
-                    <div class="details">
-                      <div class="name">{{ 'Bea Alejandro' }}</div>
-                      <div class="time-period">{{ '4 hours ago' }}</div>
-                    </div>
-                    <div class="amount-status text-right">
-                      <div>{{ '₱140.00' }}</div>
-                      <Badge
-                        :name="'Unparked'"
-                        :text-color="'#01CE81'"
-                        :bg-color="'#E5FAEE'"
-                        class="text-uppercase"
-                      />
-                    </div>
-                  </div>
-                </b-card-text>
-              </b-card-body>
-            </div>
-          </b-card>
-        </nuxt-link>
-
-        <nuxt-link to="#">
-          <b-card no-body>
-            <div class="d-flex">
-              <b-avatar text="JS"></b-avatar>
-              <b-card-body class="p-0 pl-3">
-                <b-card-text>
-                  <div class="d-flex justify-content-between">
-                    <div class="details">
-                      <div class="name">{{ 'John Smith' }}</div>
-                      <div class="time-period">{{ '3 hours ago' }}</div>
-                    </div>
-                    <div class="amount-status text-right">
-                      <div>{{ '₱40.00' }}</div>
-                      <Badge
-                        :name="'Unparked'"
-                        :text-color="'#01CE81'"
-                        :bg-color="'#E5FAEE'"
-                        class="text-uppercase"
-                      />
-                    </div>
-                  </div>
-                </b-card-text>
-              </b-card-body>
-            </div>
-          </b-card>
-        </nuxt-link>
-
-
-
-
-      <div class="d-flex justify-content-between -foot mt-4">
-        <b-button variant="outline-secondary" class='refresh' >Refresh</b-button>
-        <b-button variant="outline-primary" to="/agreements">View All</b-button>
+        <div v-if='requests.length === 0' class='text-center'>
+          <div class='empty-data my-5'>
+            <span class='d-block mt-2'>No Data</span>
+          </div>
+        </div>
       </div>
-    </div>
+
 
     </div>
   </div>
 </template>
 
 <script>
+import dateFormatter from '~/mixins/dateFormatter'
 
 export default {
-
+  mixins: [dateFormatter],
   data () {
     return {
       requests: [],
-      currentPage: 1,
-      rows: 1,
-      perPage: 1,
-      scaffoldUrl: null,
-      inputPageNum: null,
-      show: 5
+    }
+  },
+  async fetch() {
+    try {
+      const {data} = await this.$axios.$get('admin_api/v1/dashboard/latest')
+      this.requests = data.latest_parkings
+
+    } catch (err) {
+      if (err.response) {
+        this.$toast.error('Failed to fetch latest parkings.')
+      }
     }
   },
 

@@ -15,6 +15,9 @@
         <nuxt-link to='/parking'>
           <span>Parking</span>
         </nuxt-link>
+        <nuxt-link to='/customers'>
+          <span>Customers</span>
+        </nuxt-link>
       </ul>
 
 
